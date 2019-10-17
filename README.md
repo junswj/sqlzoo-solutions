@@ -4,28 +4,28 @@ Answers to the questions from https://sqlzoo.net/
 [**SELECT basics:**](#basics)<br>
 Some simple queries to get you started
 
-**SELECT from World:**<br>
+[**SELECT from World:**](#world)<br>
 In which we query the World country profile table.
 
-**SELECT from Nobel:**<br>
+[**SELECT from Nobel:**](#nobel)<br>
 Additional practice of the basic features using a table of Nobel Prize winners.
 
-**SELECT within SELECT:**<br>
+[**SELECT within SELECT:**](#select)<br>
 In which we form queries using other queries.
 
-**SUM and COUNT:**<br>
+[**SUM and COUNT:**](#sumcount)<br>
 In which we apply aggregate functions. more the same
 
-**JOIN:**<br>
+[**JOIN:**](#join)<br>
 In which we join two tables; game and goals. previously music tutorial
 
-**More JOIN operations:**<br>
+[**More JOIN operations:**](#morejoin)<br>
 In which we join actors to movies in the Movie Database.
 
-**Using Null:**<br>
+[**Using Null:**](#usingnull)<br>
 In which we look at teachers in departments. previously Scottish Parliament
 
-**Self join:**<br>
+[**Self join:**](#selfjoin)<br>
 In which we join Edinburgh bus routes to Edinburgh bus routes.
 
 ---
@@ -52,7 +52,7 @@ WHERE area BETWEEN 200000 AND 250000;
 ```
 
 ---
-# 1 SELECT from World:
+# <a name ="world"> SELECT from World </a>:
 1. show the name, continent and population of all countries.
 ```sql
 SELECT name, continent, population 
@@ -148,3 +148,26 @@ WHERE
     AND name LIKE '%o%'
     AND name NOT LIKE '% %'
 ```
+---
+# <a name ="nobel"> SELECT from Nobel </a>: 
+
+
+---
+# <a name ="select"> SELECT within SELECT </a>: 
+
+
+---
+# <a name ="sumcount"> SUM and COUNT </a>: 
+In which we apply aggregate functions. more the same
+
+---
+# <a name ="join"> JOIN </a>:
+
+---
+# <a name = "morejoin"> More JOIN operations </a>: 
+
+---
+# <a name = "usingnull"> Using Null </a>: 
+
+---
+# <a name = "selfjoin"> Self join </a>:
