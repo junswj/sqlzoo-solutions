@@ -365,7 +365,8 @@ SELECT COUNT(name) FROM world WHERE area >=1000000;
 
 5. What is the total population of ('Estonia', 'Latvia', 'Lithuania')
 ```sql
-SELECT SUM(population) FROM world WHERE name IN ('Estonia', 'Latvia', 'Lithuania');
+SELECT SUM(population) FROM world 
+WHERE name IN ('Estonia', 'Latvia', 'Lithuania');
 ```
 
 6. For each continent show the continent and number of countries.
@@ -375,16 +376,123 @@ SELECT continent, COUNT(name) FROM world GROUP BY continent;
 
 7. For each continent show the continent and number of countries with populations of at least 10 million.
 ```sql
-SELECT continent, COUNT(name) FROM world WHERE population >= 10000000 GROUP BY continent;
+SELECT continent, COUNT(name) FROM world 
+WHERE population >= 10000000 GROUP BY continent;
 ```
 
 8. List the continents that have a total population of at least 100 million.
 ```sql
-SELECT continent FROM world GROUP BY continent HAVING sum(population) >= 100000000;
+SELECT continent FROM world 
+GROUP BY continent 
+HAVING sum(population) >= 100000000;
 ```
 
 ---
 # <a name ="join"> JOIN </a>:
+1. Show the matchid and player name for all goals scored by Germany. To identify German players, check for: teamid = 'GER'
+```sql
+SELECT matchid, player FROM goal WHERE teamid = 'GER';
+```
+
+2. Show id, stadium, team1, team2 for just game 1012
+```sql
+SELECT id, stadium, team1, team2 
+FROM game 
+WHERE id =1012;
+```
+
+3. Show the player, teamid, stadium and mdate for every German goal.
+```sql
+SELECT go.player, go.teamid, ga.stadium, ga.mdate 
+FROM goal go 
+JOIN game ga ON go.matchid=ga.id 
+WHERE go.teamid = 'GER';
+```
+
+4. Show the team1, team2 and player for every goal scored by a player called Mario player LIKE 'Mario%'
+```sql
+SELECT ga.team1, ga.team2, go.player 
+FROM game ga 
+JOIN goal go ON ga.id=go.matchid 
+WHERE go.player LIKE 'Mario%';
+```
+
+5. Show player, teamid, coach, gtime for all goals scored in the first 10 minutes gtime<=10
+```sql
+SELECT go.player, go.teamid, et.coach, go.gtime 
+FROM goal  go 
+JOIN eteam et ON go.teamid = et.id 
+WHERE go.gtime<=10;
+```
+
+6. List the the dates of the matches and the name of the team in which 'Fernando Santos' was the team1 coach.
+```sql
+SELECT ga.mdate, et.teamname FROM game ga 
+JOIN eteam et ON ga.team1 = et.id 
+WHERE et.coach = 'Fernando Santos';
+```
+
+7. List the player for every goal scored in a game where the stadium was 'National Stadium, Warsaw'
+```sql
+SELECT go.player FROM goal go 
+JOIN game ga ON go.matchid = ga.id 
+WHERE ga.stadium = 'National Stadium, Warsaw';
+```
+
+8. Instead show the name of all players who scored a goal against Germany.
+```sql
+SELECT DISTINCT(player) FROM goal 
+WHERE matchid IN (SELECT id FROM game 
+                  WHERE team1 = 'GER' OR team2 = 'GER')
+      AND teamid <> 'GER';
+```
+
+9. Show teamname and the total number of goals scored.
+```sql
+SELECT et.teamname, COUNT(go.player) FROM goal go 
+JOIN eteam et ON go.teamid = et.id
+GROUP BY 1;
+```
+
+10. Show the stadium and the number of goals scored in each stadium.
+```sql
+SELECT ga.stadium, count(go.player) FROM game ga 
+JOIN goal go ON go.matchid = ga.id
+GROUP BY 1;
+```
+
+11. For every match involving 'POL', show the matchid, date and the number of goals scored.
+```sql
+SELECT go.matchid, ga.mdate, COUNT(go.player) FROM goal go
+JOIN game ga ON go.matchid = ga.id
+WHERE ga.team1='POL' OR ga.team2='POL'
+GROUP BY 1,2;
+```
+
+12. For every match where 'GER' scored, show matchid, match date and the number of goals scored by 'GER'
+```sql
+SELECT go.matchid, ga.mdate, COUNT(go.player) FROM game ga
+JOIN goal go ON ga.id = go.matchid
+WHERE go.teamid = 'GER'
+GROUP BY 1,2;
+```
+
+13. List every match with the goals scored by each team as shown.
+```sql
+SELECT ga.mdate,
+ga.team1, 
+SUM(CASE WHEN go.teamid=ga.team1 THEN 1 ELSE 0 END) SCORE1, 
+ga.team2,
+SUM(CASE WHEN go.teamid=ga.team2 THEN 1 ELSE 0 END) SCORE2
+FROM game ga
+LEFT JOIN goal go
+ON ga.id = go.matchid
+GROUP BY 1,go.matchid,2,4
+ORDER BY 1,go.matchid,2,4;
+```
+
+
+
 
 ---
 # <a name = "morejoin"> More JOIN operations </a>: 
