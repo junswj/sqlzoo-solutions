@@ -1,7 +1,7 @@
 # sqlzoo.net - solutions
 Answers to the questions from https://sqlzoo.net/
 
-[**SELECT basics:**](#basics")<br>
+[**SELECT basics:**](#basics)<br>
 Some simple queries to get you started
 
 **SELECT from World:**<br>
