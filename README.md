@@ -617,6 +617,148 @@ AND ac.name <> 'Art Garfunkel';
 
 ---
 # <a name = "usingnull"> Using Null </a>: 
+1. List the teachers who have NULL for their department.
+```sql
+SELECT te.name FROM teacher te WHERE te.dept IS NULL;
+```
+
+2. Note the INNER JOIN misses the teachers with no department and the departments with no teacher.
+```sql
+SELECT teacher.name, dept.name
+FROM teacher 
+INNER JOIN dept
+ON (teacher.dept=dept.id)
+```
+
+3. Use a different JOIN so that all teachers are listed.
+```sql
+SELECT te.name, de.name FROM teacher te 
+LEFT JOIN dept de ON de.id = te.dept;
+```
+
+4. Use a different JOIN so that all departments are listed.
+```sql
+SELECT te.name, de.name FROM teacher te 
+RIGHT JOIN dept de ON de.id = te.dept;
+```
+
+5. Use COALESCE to print the mobile number. Use the number '07986 444 2266' if there is no number given.
+```sql
+SELECT te.name, COALESCE(te.mobile, '07986 444 2266')
+FROM teacher te;
+```
+
+6. Use the COALESCE function and a LEFT JOIN to print the teacher name and department name. Use the string 'None' where there is no department.
+```sql
+SELECT te.name, COALESCE(de.name, 'None') FROM teacher te
+LEFT JOIN dept de ON te.dept = de.id;
+```
+
+7. Use COUNT to show the number of teachers and the number of mobile phones.
+```sql
+SELECT COUNT(name), COUNT(mobile) FROM teacher
+```
+
+8. Use COUNT and GROUP BY dept.name to show each department and the number of staff. Use a RIGHT JOIN to ensure that the Engineering department is listed.
+```sql
+SELECT de.name, COALESCE(COUNT(te.name), 0) FROM teacher te
+RIGHT JOIN dept de ON de.id = te.dept
+GROUP BY 1
+```
+
+9. Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2 and 'Art' otherwise.
+```sql
+SELECT te.name, CASE WHEN dept IN (1, 2) THEN 'Sci' ELSE 'Art' END FROM teacher te;
+```
+
+10. Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2, show 'Art' if the teacher's dept is 3 and 'None' otherwise.
+```sql
+SELECT te.name, 
+CASE WHEN dept IN (1,2) THEN 'Sci'
+WHEN dept = 3 THEN 'Art'
+ELSE 'None' END
+FROM teacher te;
+```
 
 ---
 # <a name = "selfjoin"> Self join </a>:
+1. How many stops are in the database.
+```sql
+SELECT COUNT(id) FROM stops
+```
+
+2. Find the id value for the stop 'Craiglockhart'
+```sql
+SELECT id FROM stops WHERE name = 'Craiglockhart'
+```
+
+3. Give the id and the name for the stops on the '4' 'LRT' service.
+```sql
+SELECT id, name FROM stops WHERE id IN
+(SELECT ro.stop FROM route ro WHERE num = '4' AND company = 'LRT');
+```
+
+4. The query shown gives the number of routes that visit either London Road (149) or Craiglockhart (53). Run the query and notice the two services that link these stops have a count of 2. Add a HAVING clause to restrict the output to these two routes.
+```sql
+SELECT company, num, COUNT(*)
+FROM route WHERE stop=149 OR stop=53
+GROUP BY company, num
+HAVING COUNT(*) = 2
+```
+
+5. Execute the self join shown and observe that b.stop gives all the places you can get to from Craiglockhart, without changing routes. Change the query so that it shows the services from Craiglockhart to London Road.
+```sql
+SELECT a.company, a.num, a.stop, b.stop
+FROM route a JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+WHERE a.stop=53 AND b.stop = (SELECT id FROM stops WHERE name = 'London Road');
+```
+
+6. The query shown is similar to the previous one, however by joining two copies of the stops table we can refer to stops by name rather than by number. Change the query so that the services between 'Craiglockhart' and 'London Road' are shown. If you are tired of these places try 'Fairmilehead' against 'Tollcross'
+```sql
+SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a 
+JOIN route b ON
+  (a.company=b.company AND a.num=b.num)
+  JOIN stops stopa ON (a.stop=stopa.id)
+  JOIN stops stopb ON (b.stop=stopb.id)
+WHERE stopa.name='Craiglockhart' AND stopb.name = 'London Road';
+```
+
+7. Give a list of all the services which connect stops 115 and 137 ('Haymarket' and 'Leith')
+```sql
+SELECT DISTINCT(x.company), x.num FROM route x 
+JOIN route y ON x.company=y.company AND x.num=y.num
+WHERE x.stop = 115 AND y.stop = 137;
+```
+
+8. Give a list of the services which connect the stops 'Craiglockhart' and 'Tollcross'
+```sql
+SELECT x.company, x.num FROM route x 
+JOIN route y ON x.company = y.company AND x.num = y.num
+WHERE x.stop = (SELECT id FROM stops WHERE name ='Craiglockhart')
+AND y.stop= (SELECT id FROM stops WHERE name = 'Tollcross')
+```
+
+9. Give a distinct list of the stops which may be reached from 'Craiglockhart' by taking one bus, including 'Craiglockhart' itself, offered by the LRT company. Include the company and bus no. of the relevant services.
+```sql
+SELECT st.name, x.company, y.num FROM route x
+JOIN route y ON x.company = y.company AND x.num=y.num
+JOIN stops st ON y.stop = st. id
+WHERE x.stop = (SELECT id FROM stops WHERE name = 'Craiglockhart')
+```
+
+10. Find the routes involving two buses that can go from Craiglockhart to Lochend.
+Show the bus no. and company for the first bus, the name of the stop for the transfer,
+and the bus no. and company for the second bus.
+```sql
+SELECT ro1.num, ro1.company, st.name, ro3.num, ro3.company FROM route ro1
+JOIN route ro2 ON ro1.num = ro2.num AND ro1.company = ro2.company
+JOIN (route ro3 
+      JOIN route ro4 
+      ON ro3.num =ro4.num AND ro3.company = ro4.company)
+JOIN stops st ON st.id = ro2.stop
+WHERE ro1.stop = (SELECT st1.id FROM stops st1 WHERE name = 'Craiglockhart')
+AND ro4.stop = (SELECT st2.id FROM stops st2 WHERE name = 'Lochend')
+AND ro2.stop=ro3.stop;
+```
