@@ -383,7 +383,6 @@ SELECT continent, COUNT(name) FROM world WHERE population >= 10000000 GROUP BY c
 SELECT continent FROM world GROUP BY continent HAVING sum(population) >= 100000000;
 ```
 
-
 ---
 # <a name ="join"> JOIN </a>:
 
