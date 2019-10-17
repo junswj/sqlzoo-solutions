@@ -10,7 +10,7 @@ In which we query the World country profile table.
 [**SELECT from Nobel:**](#nobel)<br>
 Additional practice of the basic features using a table of Nobel Prize winners.
 
-[**SELECT within SELECT:**](#select)<br>
+[**SELECT in SELECT:**](#select)<br>
 In which we form queries using other queries.
 
 [**SUM and COUNT:**](#sumcount)<br>
@@ -257,7 +257,7 @@ ORDER BY subject IN ('Chemistry' , 'Physics'), subject, winner;
 
 
 ---
-# <a name ="select"> SELECT within SELECT </a>: 
+# <a name ="select"> SELECT in SELECT </a>: 
 
 
 ---
