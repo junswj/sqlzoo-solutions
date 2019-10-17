@@ -1,5 +1,5 @@
 # sqlzoo solutions
-Answers to the questions from https://sqlzoo.net/
+My answers to the questions from https://sqlzoo.net/
 
 [**SELECT basics:**](#basics)<br>
 Some simple queries to get you started
