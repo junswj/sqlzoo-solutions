@@ -1,4 +1,4 @@
-# sqlzoo.net - solutions
+# sqlzoo solutions
 Answers to the questions from https://sqlzoo.net/
 
 [**SELECT basics:**](#basics)<br>
